@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-deployment
+  labels:
+    app: http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-server
+  template:
+    metadata:
+      labels:
+        app: http-server
+    spec:
+      containers:
+      - name: http-server
+        image: my-own-dockerfile # Dockerfile needs to be pushed first
+        ports:
+        - containerPort: 3000
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secreKeyRef:
+            name: postgres-secret
+            key: postgres-password
+        - name: POSTGRES_USER
+          valueFrom:
+            secreKeyRef:
+            name: postgres-secret
+            key: postgres-user
+        - name: DB_URL
+          valueFrom:
+          configMapRef:
+          name: postgres-config
+          value: postgres-url
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: http-service
+spec:
+  type: NordPort
+  selector:
+    app.kubernetes.io/name: http-server
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000
