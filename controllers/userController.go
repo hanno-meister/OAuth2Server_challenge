@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/hanno-meister/OAuth2Server_challenge/initializers"
 	"github.com/hanno-meister/OAuth2Server_challenge/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Signup(c *gin.Context) {
@@ -27,7 +28,19 @@ func Signup(c *gin.Context) {
 	}
 
 	// Create the user and save in DB
-	user := models.User{Email: body.Email, Password: body.Password}
+
+	// Hash password
+	hashed_pw, err := bcrypt.GenerateFromPassword([]byte(body.Password), 10)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to hash password",
+		})
+
+		return
+	}
+
+	user := models.User{Email: body.Email, Password: string(hashed_pw)}
 	result := initializers.DB.Create(&user)
 
 	if result.Error != nil {
@@ -73,10 +86,14 @@ func GetToken(c *gin.Context) {
 		return
 	}
 
-	if user.Password != body.Password {
+	// Compare sent in password with hashed password
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid password",
+			"error": "Invalid Password",
 		})
+
 		return
 	}
 
