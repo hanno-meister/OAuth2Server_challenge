@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/gin-gonic/gin"
+	"github.com/hanno-meister/OAuth2Server_challenge/controllers"
 	"github.com/hanno-meister/OAuth2Server_challenge/initializers"
 )
 
@@ -13,5 +13,9 @@ func init() {
 }
 
 func main() {
-	fmt.Println("Hello World!")
+	router := gin.Default()
+
+	router.POST("/signup", controllers.Signup)
+
+	router.Run()
 }
