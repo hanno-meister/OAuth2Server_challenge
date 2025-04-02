@@ -10,6 +10,7 @@ func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDb()
 	initializers.MigrateDB()
+	initializers.CreatePrivateKey()
 }
 
 func main() {
