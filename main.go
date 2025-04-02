@@ -11,6 +11,7 @@ func init() {
 	initializers.ConnectToDb()
 	initializers.MigrateDB()
 	initializers.CreatePrivateKey()
+	initializers.CreateJwkKey()
 }
 
 func main() {
@@ -18,6 +19,7 @@ func main() {
 
 	router.POST("/signup", controllers.Signup)
 	router.POST("/token", controllers.GetToken)
+	router.GET("/signingkeys", controllers.ListSigningKeys)
 
 	router.Run()
 }

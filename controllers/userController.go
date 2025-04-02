@@ -101,3 +101,9 @@ func GetToken(c *gin.Context) {
 		"token": tokenString,
 	})
 }
+
+func ListSigningKeys(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"key": initializers.JwkKey,
+	})
+}
