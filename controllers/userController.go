@@ -107,3 +107,13 @@ func ListSigningKeys(c *gin.Context) {
 		"key": initializers.JwkKey,
 	})
 }
+
+func IntrospectToken(c *gin.Context) {
+	claims, _ := c.Get("claims")
+
+	c.JSON(http.StatusOK, gin.H{
+		"active":    true,
+		"client_id": claims.(jwt.MapClaims)["sub"],
+		"exp":       claims.(jwt.MapClaims)["exp"].(float64),
+	})
+}
