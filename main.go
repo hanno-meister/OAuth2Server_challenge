@@ -17,6 +17,7 @@ func main() {
 	router := gin.Default()
 
 	router.POST("/signup", controllers.Signup)
+	router.POST("/token", controllers.GetToken)
 
 	router.Run()
 }
