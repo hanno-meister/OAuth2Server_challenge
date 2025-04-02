@@ -1,0 +1,15 @@
+services:
+  go-server-db:
+    image: postgres
+    container_name: go-server-db
+    environment:
+      POSTGRES_PASSWORD: admin
+    ports: 
+      - "5432:5432"
+
+  go-server:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - go-server-db
